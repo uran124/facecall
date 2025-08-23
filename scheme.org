@@ -1,0 +1,34 @@
+/public_html
+├── index.html                    # единственная точка входа SPA
+├── manifest.webmanifest          # PWA-манифест
+├── service-worker.js             # оффлайн/кэш (минимально)
+├── .htaccess                     # SPA‑роутинг + статика (для Apache-хостинга)
+│
+├── /assets                       # статические ассеты
+│   ├── /icons                    # PWA-иконки разных размеров
+│   ├── /img
+│   └── /audio
+│
+├── /css
+│   └── globals.css               # немного своих стилей поверх Tailwind CDN (опционально)
+│
+├── /config
+│   ├── config.example.js         # образец настроек (без секретов)
+│   └── config.js                 # боевые ключи: Supabase URL/anonKey, ICE-сервера и пр.
+│
+├── /js
+│   ├── app.js                    # инициализация, простой роутер, PWA‑хуки
+│   ├── rtc.js                    # WebRTC логика: peer, медиа, ICE, reconnection
+│   ├── chat.js                   # чат: загрузка/отправка, ограничение 100 сообщений
+│   ├── supabase.js               # клиент Supabase (Auth/Realtimes/DB)
+│   ├── ui.js                     # простые helpers для DOM/рендеринга
+│   ├── pwa.js                    # регистрация SW, обновления, уведомления (later)
+│   └── /features                 # фичи отдельными модулями
+│       ├── audio-only.js         # переключение "только аудио"
+│       ├── reconnect.js          # кнопка/логика переподключения
+│       ├── invite-links.js       # приглашения (коды/параметры в URL)
+│       └── metrics.js            # простые метрики (later)
+│
+└── /docs                         # служебные заметки для команды (не обязательно на прод)
+    ├── README-hosting.md
+    └── schema.sql                # схема таблиц для Supabase (источник правды)
