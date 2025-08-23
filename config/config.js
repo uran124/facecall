@@ -7,7 +7,10 @@ export const ICE_SERVERS = [
   // { urls: 'turns:turn.example.com:5349', username: 'user', credential: 'pass' }, // Example TURN server
 ];
 
-export const SUPABASE_PROJECT_ID = process.env.SUPABASE_PROJECT_ID || '<your-project-id>';
-export const SUPABASE_URL = process.env.SUPABASE_URL || 'https://<your-project-ref>.supabase.co';
-export const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || '<your-anon-key>';
+export const SUPABASE_PROJECT_ID = process.env.SUPABASE_PROJECT_ID || 'cewbeibfnhszhywssbtq';
+export const SUPABASE_URL =
+  process.env.SUPABASE_URL || 'https://cewbeibfnhszhywssbtq.supabase.co';
+export const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNld2JlaWJmbmhzemh5d3NzYnRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NjA4NzYsImV4cCI6MjA3MTUzNjg3Nn0.8krynDDOAxV12xkcgSBsQ-qxb3JrDysjQkzggFzPpPg';
 export const TELEGRAM_BOT_TOKEN = '8338260347:AAFaqaEfiWkIMISuvoZW2FTk5yaHwgwWxj0';
