@@ -12,8 +12,15 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-neutral-950 text-neutral-100">
-  <div id="app"></div>
-  <div id="participants"></div>
+  <div id="app">
+    <div id="messages" class="message-list"></div>
+
+    <form id="messageForm" class="layout-stack p-4">
+      <input id="message" class="input mb-2" type="text" autocomplete="off" />
+      <button id="sendBtn" type="button" class="btn">Send</button>
+    </form>
+  </div>
+<div id="participants"></div>
 
   <script type="module">
     import '/js/app.js';
