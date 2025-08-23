@@ -1,6 +1,6 @@
 function createMessageElement(msg) {
   const el = document.createElement('div');
-  el.className = 'message' + (msg.author === 'me' ? ' me' : '');
+  el.className = 'message';
   el.textContent = msg.content ?? '';
   return el;
 }

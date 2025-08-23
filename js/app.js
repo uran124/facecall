@@ -42,7 +42,7 @@ export async function enterRoom(roomId) {
     if (!text) return;
     input.value = '';
     try {
-      await sendMessage(roomId, text, 'guest');
+      await sendMessage(roomId, text);
     } catch (e) {
       toast('Не удалось отправить сообщение');
       console.error(e);
