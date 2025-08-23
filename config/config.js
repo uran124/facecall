@@ -6,15 +6,17 @@ export const ICE_SERVERS = [
   { urls: ['stun:stun.l.google.com:19302'] }, // Example STUN server
   // { urls: 'turns:turn.example.com:5349', username: 'user', credential: 'pass' }, // Example TURN server
 ];
+// In a browser environment `process` may be undefined; read env vars safely
+const env = typeof process === 'object' && process.env ? process.env : {};
 
-export const SUPABASE_PROJECT_ID = process.env.SUPABASE_PROJECT_ID || 'cewbeibfnhszhywssbtq';
+export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID || 'cewbeibfnhszhywssbtq';
 export const SUPABASE_URL =
-  process.env.SUPABASE_URL || 'https://cewbeibfnhszhywssbtq.supabase.co';
+  env.SUPABASE_URL || 'https://cewbeibfnhszhywssbtq.supabase.co';
 export const SUPABASE_ANON_KEY =
-  process.env.SUPABASE_ANON_KEY ||
+  env.SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNld2JlaWJmbmhzemh5d3NzYnRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NjA4NzYsImV4cCI6MjA3MTUzNjg3Nn0.8krynDDOAxV12xkcgSBsQ-qxb3JrDysjQkzggFzPpPg';
 export const TELEGRAM_BOT_USERNAME =
-  process.env.TELEGRAM_BOT_USERNAME || 'YOUR_BOT';
+  env.TELEGRAM_BOT_USERNAME || 'YOUR_BOT';
 export const TELEGRAM_BOT_TOKEN =
-  process.env.TELEGRAM_BOT_TOKEN ||
+  env.TELEGRAM_BOT_TOKEN ||
   '8338260347:AAFaqaEfiWkIMISuvoZW2FTk5yaHwgwWxj0';
