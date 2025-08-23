@@ -13,4 +13,8 @@ export const SUPABASE_URL =
 export const SUPABASE_ANON_KEY =
   process.env.SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNld2JlaWJmbmhzemh5d3NzYnRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NjA4NzYsImV4cCI6MjA3MTUzNjg3Nn0.8krynDDOAxV12xkcgSBsQ-qxb3JrDysjQkzggFzPpPg';
-export const TELEGRAM_BOT_TOKEN = '8338260347:AAFaqaEfiWkIMISuvoZW2FTk5yaHwgwWxj0';
+export const TELEGRAM_BOT_USERNAME =
+  process.env.TELEGRAM_BOT_USERNAME || 'YOUR_BOT';
+export const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN ||
+  '8338260347:AAFaqaEfiWkIMISuvoZW2FTk5yaHwgwWxj0';
