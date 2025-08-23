@@ -1,6 +1,7 @@
 import { openRoomChannel } from './rtc-signal.js';
 import { loadMessages, sendMessage, subscribeMessages } from './chat.js';
 import * as rtc from './rtc.js';
+import './features/audio-only.js';
 
 function renderPresence() {}
 function renderMessages() {}

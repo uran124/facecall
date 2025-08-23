@@ -4,6 +4,7 @@ let pc;
 let sendSignalFn;
 let currentRoomId;
 let reconnectTimer;
+let localStream;
 
 function ensureVideo(id, muted = false) {
   let el = document.getElementById(id);
@@ -28,6 +29,16 @@ function scheduleReconnect() {
     reconnectTimer = null;
     if (currentRoomId) start(currentRoomId);
   }, 1000);
+}
+
+export function toggleVideo(enabled) {
+  localStream?.getVideoTracks().forEach(track => {
+    track.enabled = enabled;
+  });
+  const localVideo = document.getElementById('localVideo');
+  if (localVideo) {
+    localVideo.style.display = enabled ? '' : 'none';
+  }
 }
 
 export async function start(roomId) {
@@ -59,7 +70,7 @@ export async function start(roomId) {
     }
   };
 
-  const localStream = await navigator.mediaDevices.getUserMedia({
+  localStream = await navigator.mediaDevices.getUserMedia({
     audio: true,
     video: true
   });
