@@ -1,12 +1,25 @@
 import { openRoomChannel } from './rtc-signal.js';
 import { loadMessages, sendMessage, subscribeMessages } from './chat.js';
 import * as rtc from './rtc.js';
-import { renderMessageList, appendMessage } from './ui.js';
+import { renderMessageList, appendMessage, renderPresence } from './ui.js';
 
-function renderPresence() {}
 function toast(msg) { console.error(msg); }
 
+function renderChatUI() {
+  const app = document.getElementById('app');
+  if (!app) return;
+  app.innerHTML = `
+    <div id="messages" class="message-list"></div>
+    <form id="messageForm" class="layout-stack p-4">
+      <input id="message" class="input mb-2" type="text" autocomplete="off" />
+      <button id="sendBtn" type="button" class="btn">Send</button>
+    </form>
+  `;
+}
+
+
 export async function enterRoom(roomId) {
+  renderChatUI();
   const participantsEl = document.querySelector('#participants');
   const { channel, sendSignal, close } = openRoomChannel(roomId, {
     onSignal: msg => rtc.onSignal?.(msg, sendSignal),
@@ -16,7 +29,7 @@ export async function enterRoom(roomId) {
   });
 
   const history = await loadMessages(roomId, 100);
- renderMessageList(history);
+  renderMessageList(history);
 
   subscribeMessages(roomId, msg => appendMessage(msg), channel);
 
@@ -46,25 +59,24 @@ function parseRoomId() {
 
 function renderJoinForm(app) {
   app.innerHTML = `
-    <form id="joinForm" class="flex gap-2">
-      <input id="roomInput" class="flex-1 border p-2" required />
-      <button type="submit" class="px-4 py-2 bg-blue-600 text-white">Войти/Создать</button>
+    <form id="roomForm" class="layout-stack p-4">
+      <input id="roomId" class="input mb-2" type="text" autocomplete="off" />
+      <button type="submit" class="btn">Войти/Создать</button>
     </form>
   `;
 
-  app.querySelector('#joinForm').addEventListener('submit', e => {
+  app.querySelector('#roomForm')?.addEventListener('submit', e => {
     e.preventDefault();
-    const id = app.querySelector('#roomInput').value.trim();
+    const id = app.querySelector('#roomId').value.trim();
     if (!id) return;
-    currentRoomId = id;
     location.hash = `#/room/${encodeURIComponent(id)}`;
-    enterRoom(id);
   });
 }
 
 let currentRoomId;
 function handleHashChange() {
-  const app = document.querySelector('#app');
+  const app = document.getElementById('app');
+  if (!app) return;
   const roomId = parseRoomId();
   if (roomId) {
     if (roomId !== currentRoomId) {
