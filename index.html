@@ -12,7 +12,8 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-neutral-950 text-neutral-100">
-  <div id="app">
+  <div id="login-root" class="flex items-center justify-center h-screen"></div>
+  <div id="app" class="hidden">
     <div id="messages" class="message-list"></div>
 
     <form id="messageForm" class="layout-stack p-4">
@@ -24,6 +25,16 @@
 
   <script type="module">
     import '/js/app.js';
+    import { initTelegramAuthUI } from '/js/auth-tg.js';
+    initTelegramAuthUI({
+      botUsername: 'YOUR_BOT',
+      functionUrl: '/functions/v1/tg_login',
+      containerId: 'login-root',
+      onLogin: () => {
+        document.getElementById('login-root').style.display = 'none';
+        document.getElementById('app').classList.remove('hidden');
+      }
+    });
   </script>
 </body>
 </html>
