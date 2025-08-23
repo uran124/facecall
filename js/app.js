@@ -7,13 +7,16 @@ function renderPresence() {}
 function toast(msg) { console.error(msg); }
 
 export async function enterRoom(roomId) {
+  const participantsEl = document.querySelector('#participants');
   const { channel, sendSignal, close } = openRoomChannel(roomId, {
     onSignal: msg => rtc.onSignal?.(msg, sendSignal),
-    onPresence: state => renderPresence(state)
+    onPresence: state => {
+      if (participantsEl) participantsEl.innerHTML = renderPresence(state);
+    }
   });
 
   const history = await loadMessages(roomId, 100);
-  renderMessageList(history);
+ renderMessageList(history);
 
   subscribeMessages(roomId, msg => appendMessage(msg), channel);
 
