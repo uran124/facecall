@@ -37,4 +37,44 @@ export async function enterRoom(roomId) {
   window.addEventListener('beforeunload', close);
 }
 
-enterRoom('test');
+function parseRoomId() {
+  const match = location.hash.match(/^#\/room\/(.+)$/);
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
+function renderJoinForm(app) {
+  app.innerHTML = `
+    <form id="joinForm" class="flex gap-2">
+      <input id="roomInput" class="flex-1 border p-2" required />
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white">Войти/Создать</button>
+    </form>
+  `;
+
+  app.querySelector('#joinForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const id = app.querySelector('#roomInput').value.trim();
+    if (!id) return;
+    currentRoomId = id;
+    location.hash = `#/room/${encodeURIComponent(id)}`;
+    enterRoom(id);
+  });
+}
+
+let currentRoomId;
+function handleHashChange() {
+  const app = document.querySelector('#app');
+  const roomId = parseRoomId();
+  if (roomId) {
+    if (roomId !== currentRoomId) {
+      currentRoomId = roomId;
+      app.innerHTML = '';
+      enterRoom(roomId);
+    }
+  } else {
+    currentRoomId = undefined;
+    renderJoinForm(app);
+  }
+}
+
+window.addEventListener('hashchange', handleHashChange);
+handleHashChange();
