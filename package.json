@@ -1,0 +1,22 @@
+{
+  "name": "facecall",
+  "version": "1.0.0",
+  "description": "Мини‑веб‑мессенджер с чатами и 1:1 аудио/видео‑звонками прямо в браузере. PWA, Supabase (DB + Realtime), WebRTC, деплой на shared‑хостинг в `/public_html`. Минимально зависимостей: Tailwind CDN, Supabase JS.",
+  "type": "module",
+  "main": "service-worker.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.1"
+  },
+  "devDependencies": {
+    "jsdom": "^22.1.0"
+  }
+}
