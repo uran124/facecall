@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
+import { createHmac } from "https://deno.land/std@0.192.0/crypto/mod.ts";
 import { SignJWT } from "https://deno.land/x/jose@v4.14.4/index.ts";
 
 const corsHeaders = {
@@ -29,33 +30,17 @@ serve(async (req: Request): Promise<Response> => {
       return new Response("Auth date too old", { status: 401, headers: corsHeaders });
     }
 
-    // Build data check string for signature verification
-    const dataCheckString = Object.entries(body)
-      .filter(([key]) => key !== "hash")
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, value]) => `${key}=${value}`)
-      .join("\n");
-
-    // Verify Telegram signature
+    // Build data string and verify Telegram signature
+    const data = new URLSearchParams(
+      Object.entries(body).filter(([key]) => key !== "hash"),
+    ).toString();
     const secret = await crypto.subtle.digest(
       "SHA-256",
       new TextEncoder().encode(Deno.env.get("BOT_TOKEN") ?? ""),
     );
-    const key = await crypto.subtle.importKey(
-      "raw",
-      secret,
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["sign"],
-    );
-    const signature = await crypto.subtle.sign(
-      "HMAC",
-      key,
-      new TextEncoder().encode(dataCheckString),
-    );
-    const hmac = Array.from(new Uint8Array(signature))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
+    const hmac = createHmac("sha256", new Uint8Array(secret))
+      .update(data)
+      .digest("hex");
 
     if (hmac !== body.hash) {
       return new Response("Invalid hash", { status: 401, headers: corsHeaders });
