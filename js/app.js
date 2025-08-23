@@ -17,25 +17,6 @@ function renderChatUI() {
   `;
 }
 
-function renderJoinForm() {
-  const app = document.getElementById('app');
-  if (!app) return;
-  app.innerHTML = `
-    <form id="roomForm" class="layout-stack p-4">
-      <input id="roomId" class="input mb-2" type="text" autocomplete="off" />
-      <button type="submit" class="btn">Войти/Создать</button>
-    </form>
-  `;
-  const form = document.getElementById('roomForm');
-  const input = document.getElementById('roomId');
-  form?.addEventListener('submit', e => {
-    e.preventDefault();
-    const id = input.value.trim();
-    if (!id) return;
-    location.hash = `/room/${id}`;
-    enterRoom(id);
-  });
-}
 
 export async function enterRoom(roomId) {
   renderChatUI();
@@ -71,17 +52,41 @@ export async function enterRoom(roomId) {
   window.addEventListener('beforeunload', close);
 }
 
-function getRoomIdFromHash() {
+function parseRoomId() {
   const match = location.hash.match(/^#\/room\/(.+)$/);
   return match ? decodeURIComponent(match[1]) : '';
 }
 
+function renderJoinForm(app) {
+  app.innerHTML = `
+    <form id="roomForm" class="layout-stack p-4">
+      <input id="roomId" class="input mb-2" type="text" autocomplete="off" />
+      <button type="submit" class="btn">Войти/Создать</button>
+    </form>
+  `;
+
+  app.querySelector('#roomForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const id = app.querySelector('#roomId').value.trim();
+    if (!id) return;
+    location.hash = `#/room/${encodeURIComponent(id)}`;
+  });
+}
+
+let currentRoomId;
 function handleHashChange() {
-  const roomId = getRoomIdFromHash();
+  const app = document.getElementById('app');
+  if (!app) return;
+  const roomId = parseRoomId();
   if (roomId) {
-    enterRoom(roomId);
+    if (roomId !== currentRoomId) {
+      currentRoomId = roomId;
+      app.innerHTML = '';
+      enterRoom(roomId);
+    }
   } else {
-    renderJoinForm();
+    currentRoomId = undefined;
+    renderJoinForm(app);
   }
 }
 
