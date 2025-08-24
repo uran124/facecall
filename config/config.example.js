@@ -9,6 +9,8 @@ export const ICE_SERVERS = [
 // In browser builds `process` might be undefined; guard its usage
 const env = typeof process === 'object' && process.env ? process.env : {};
 
+const env = typeof process !== 'undefined' ? process.env : {};
+
 export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID || '<your-project-id>';
 export const SUPABASE_URL = env.SUPABASE_URL || 'https://<your-project-ref>.supabase.co';
 export const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY || '<your-anon-key>';
