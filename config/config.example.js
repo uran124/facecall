@@ -7,8 +7,10 @@ export const ICE_SERVERS = [
   // { urls: 'turns:turn.example.com:5349', username: 'user', credential: 'pass' }, // Example TURN server
 ];
 
-export const SUPABASE_PROJECT_ID = process.env.SUPABASE_PROJECT_ID || '<your-project-id>';
-export const SUPABASE_URL = process.env.SUPABASE_URL || 'https://<your-project-ref>.supabase.co';
-export const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || '<your-anon-key>';
-export const TELEGRAM_BOT_USERNAME = process.env.TELEGRAM_BOT_USERNAME || '<your-bot-username>';
-export const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '<your-bot-token>';
+const env = typeof process !== 'undefined' ? process.env : {};
+
+export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID || '<your-project-id>';
+export const SUPABASE_URL = env.SUPABASE_URL || 'https://<your-project-ref>.supabase.co';
+export const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY || '<your-anon-key>';
+export const TELEGRAM_BOT_USERNAME = env.TELEGRAM_BOT_USERNAME || '<your-bot-username>';
+export const TELEGRAM_BOT_TOKEN = env.TELEGRAM_BOT_TOKEN || '<your-bot-token>';
