@@ -33,7 +33,11 @@ test('init and login in browser-like environment', async () => {
   globalThis.window = { document };
   globalThis.localStorage = createLocalStorage();
   window.localStorage = localStorage;
-  globalThis.fetch = async () => ({ ok: true, json: async () => ({ access_token: 'abc', profile: {} }), text: async () => '' });
+  globalThis.fetch = async () => ({
+    ok: true,
+    headers: { get: () => 'application/json' },
+    text: async () => JSON.stringify({ access_token: 'abc', profile: {} })
+  });
 
   const auth = await import('../js/auth-tg.js');
   auth.initTelegramAuthUI({ botUsername: 'bot', functionUrl: '/func', containerId: 'login-root' });

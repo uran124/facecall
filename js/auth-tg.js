@@ -55,10 +55,23 @@ async function exchangeTelegramUser(functionUrl, tgUserPayload) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(tgUserPayload),
   });
+
+  const contentType = res.headers?.get?.('content-type') || '';
+  const text = await res.text();
+
   if (!res.ok) {
-    throw new Error(await res.text());
+    throw new Error(text || `HTTP ${res.status}`);
   }
-  return res.json();
+
+  if (!contentType.includes('application/json')) {
+    throw new Error(text || 'Invalid response from auth server');
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error('Invalid JSON response');
+  }
 }
 
 /**
