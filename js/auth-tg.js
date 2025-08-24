@@ -4,8 +4,8 @@
  * use it with Supabase (REST + Realtime) via Authorization header.
  *
  * Usage:
- *   import { initTelegramAuthUI, getSupabaseClient, signOut } from './auth-tg.js'
- *   initTelegramAuthUI({ botUsername: 'YOUR_BOT', functionUrl: '/functions/v1/tg_login' })
+*   import { initTelegramAuthUI, getSupabaseClient, signOut } from './auth-tg.js'
+*   initTelegramAuthUI({ botUsername: 'YOUR_BOT', functionName: 'tg_login' })
  */
 
 const isNode = typeof process !== 'undefined' && process.versions?.node;
@@ -49,36 +49,20 @@ async function createClientWithToken(token) {
   }
 })();
 
-async function exchangeTelegramUser(functionUrl, tgUserPayload) {
-  const res = await fetch(functionUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(tgUserPayload),
+async function exchangeTelegramUser(functionName, tgUserPayload) {
+  const tmp = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data, error } = await tmp.functions.invoke(functionName, {
+    body: tgUserPayload,
   });
-
-  const contentType = res.headers?.get?.('content-type') || '';
-  const text = await res.text();
-
-  if (!res.ok) {
-    throw new Error(text || `HTTP ${res.status}`);
-  }
-
-  if (!contentType.includes('application/json')) {
-    throw new Error(text || 'Invalid response from auth server');
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch (e) {
-    throw new Error('Invalid JSON response');
-  }
+  if (error) throw error;
+  return data;
 }
 
 /**
  * Render Telegram Login Widget and handle callback.
  * Options:
  *  - botUsername: string (without @)
- *  - functionUrl: string (Edge Function endpoint)
+ *  - functionName: string (Edge Function name)
  *  - containerId?: string (DOM id to mount the button)
  *  - onLogin?: (profile) => void
  */
@@ -86,8 +70,8 @@ export function initTelegramAuthUI(opts) {
   if (typeof document === 'undefined') {
     throw new Error('initTelegramAuthUI is only available in browser environments');
   }
-  const { botUsername, functionUrl, containerId = 'login-root', onLogin } = opts;
-  if (!botUsername || !functionUrl) throw new Error('botUsername and functionUrl are required');
+  const { botUsername, functionName, containerId = 'login-root', onLogin } = opts;
+  if (!botUsername || !functionName) throw new Error('botUsername and functionName are required');
 
   const mount = document.getElementById(containerId) || document.body;
 
@@ -113,7 +97,7 @@ export function initTelegramAuthUI(opts) {
   // Expose global callback for the widget
   window.onTelegramAuth = async function(user) {
     try {
-      const { access_token, profile } = await exchangeTelegramUser(functionUrl, user);
+      const { access_token, profile } = await exchangeTelegramUser(functionName, user);
       accessToken = access_token;
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('sb_tg_token', access_token);

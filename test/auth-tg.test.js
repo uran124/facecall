@@ -33,14 +33,14 @@ test('init and login in browser-like environment', async () => {
   globalThis.window = { document };
   globalThis.localStorage = createLocalStorage();
   window.localStorage = localStorage;
-  globalThis.fetch = async () => ({
-    ok: true,
-    headers: { get: () => 'application/json' },
-    text: async () => JSON.stringify({ access_token: 'abc', profile: {} })
-  });
+  globalThis.fetch = async () =>
+    new Response(JSON.stringify({ access_token: 'abc', profile: {} }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
   const auth = await import('../js/auth-tg.js');
-  auth.initTelegramAuthUI({ botUsername: 'bot', functionUrl: '/func', containerId: 'login-root' });
+  auth.initTelegramAuthUI({ botUsername: 'bot', functionName: 'tg_login', containerId: 'login-root' });
   const wrap = container.children.find(c => c.id === 'tg-login-wrap');
   assert.ok(wrap);
   const scriptEl = wrap.children && wrap.children.find(c => c.tagName === 'SCRIPT');
