@@ -7,8 +7,6 @@ export const ICE_SERVERS = [
   // { urls: 'turns:turn.example.com:5349', username: 'user', credential: 'pass' }, // Example TURN server
 ];
 // In browser builds `process` might be undefined; guard its usage
-const env = typeof process === 'object' && process.env ? process.env : {};
-
 const env = typeof process !== 'undefined' ? process.env : {};
 
 export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID || '<your-project-id>';
