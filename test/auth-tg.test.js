@@ -37,7 +37,11 @@ test('init and login in browser-like environment', async () => {
 
   const auth = await import('../js/auth-tg.js');
   auth.initTelegramAuthUI({ botUsername: 'bot', functionUrl: '/func', containerId: 'login-root' });
-  assert.ok(container.children.find(c => c.id === 'tg-login-wrap'));
+  const wrap = container.children.find(c => c.id === 'tg-login-wrap');
+  assert.ok(wrap);
+  const scriptEl = wrap.children && wrap.children.find(c => c.tagName === 'SCRIPT');
+  assert.ok(scriptEl);
+  assert.equal(scriptEl['data-onauth'], 'onTelegramAuth(user)');
   await window.onTelegramAuth({ id: 1 });
   assert.equal(auth.isAuthenticated(), true);
 });
