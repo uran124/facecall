@@ -6,6 +6,8 @@ export const ICE_SERVERS = [
   { urls: ['stun:stun.l.google.com:19302'] }, // Example STUN server
   // { urls: 'turns:turn.example.com:5349', username: 'user', credential: 'pass' }, // Example TURN server
 ];
+// In browser builds `process` might be undefined; guard its usage
+const env = typeof process === 'object' && process.env ? process.env : {};
 
 const env = typeof process !== 'undefined' ? process.env : {};
 
