@@ -28,7 +28,7 @@
   <script type="module">
     import '/js/app.js';
     import { initTelegramAuthUI, isAuthenticated } from '/js/auth-tg.js';
-    import { SUPABASE_URL, TELEGRAM_BOT_USERNAME } from '/config/config.js';
+    import { TELEGRAM_BOT_USERNAME } from '/config/config.js';
 
     const loginRoot = document.getElementById('login-root');
     const app = document.getElementById('app');
@@ -46,7 +46,7 @@
         loginBtn.remove();
         initTelegramAuthUI({
           botUsername: TELEGRAM_BOT_USERNAME,
-          functionUrl: `${SUPABASE_URL}/functions/v1/tg_login`,
+          functionName: 'tg_login',
           containerId: 'login-root',
           onLogin: showApp
         });
