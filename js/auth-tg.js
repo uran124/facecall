@@ -94,7 +94,7 @@ export function initTelegramAuthUI(opts) {
   script.setAttribute('data-size', 'large');
   script.setAttribute('data-userpic', 'true');
   script.setAttribute('data-request-access', 'write');
-  script.setAttribute('data-onauth', 'onTelegramAuth');
+  script.setAttribute('data-onauth', 'onTelegramAuth(user)');
   wrap.appendChild(script);
 
   // Expose global callback for the widget
@@ -106,7 +106,12 @@ export function initTelegramAuthUI(opts) {
         localStorage.setItem('sb_tg_token', access_token);
       }
       await createClientWithToken(access_token);
-      if (typeof onLogin === 'function') onLogin(profile);
+      if (typeof onLogin === 'function') {
+        onLogin(profile);
+      } else if (typeof window.showApp === 'function') {
+        // Fallback: ensure the main app is revealed even if no onLogin callback
+        window.showApp();
+      }
     } catch (e) {
       console.error('Telegram auth failed:', e);
       if (typeof alert === 'function') alert('Не удалось войти через Telegram: ' + e.message);
