@@ -30,13 +30,32 @@ serve(async (req: Request): Promise<Response> => {
       return new Response("Auth date too old", { status: 401, headers: corsHeaders });
     }
 
+    // Ensure required env variables exist
+    const requiredEnv = [
+      "BOT_TOKEN",
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_KEY",
+      "SUPABASE_JWT_SECRET",
+    ];
+    const missing = requiredEnv.filter((k) => !Deno.env.get(k));
+    if (missing.length) {
+      console.error("Missing env vars", missing);
+      return new Response("Missing environment variables", {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
+
     // Build data string and verify Telegram signature
-    const data = new URLSearchParams(
-      Object.entries(body).filter(([key]) => key !== "hash"),
-    ).toString();
+    const data = Object.keys(body)
+      .filter((k) => k !== "hash")
+      .sort()
+      .map((k) => `${k}=${body[k as keyof typeof body]}`)
+      .join("\n");
+
     const secret = await crypto.subtle.digest(
       "SHA-256",
-      new TextEncoder().encode(Deno.env.get("BOT_TOKEN") ?? ""),
+      new TextEncoder().encode(Deno.env.get("BOT_TOKEN")!),
     );
     const hmac = createHmac("sha256", new Uint8Array(secret))
       .update(data)
@@ -55,11 +74,14 @@ serve(async (req: Request): Promise<Response> => {
       avatar_url: body.photo_url ?? null,
     };
 
-    const upsertResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/rest/v1/profiles`, {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_KEY")!;
+
+    const upsertResp = await fetch(`${supabaseUrl}/rest/v1/profiles`, {
       method: "POST",
       headers: {
-        apikey: Deno.env.get("SUPABASE_SERVICE_KEY") ?? "",
-        Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_KEY") ?? ""}`,
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
         "Content-Type": "application/json",
         Prefer: "resolution=merge-duplicates",
       },
@@ -79,9 +101,11 @@ serve(async (req: Request): Promise<Response> => {
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
     };
 
+    const jwtSecret = Deno.env.get("SUPABASE_JWT_SECRET")!;
+
     const access_token = await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })
-      .sign(new TextEncoder().encode(Deno.env.get("SUPABASE_JWT_SECRET") ?? ""));
+      .sign(new TextEncoder().encode(jwtSecret));
 
     return new Response(
       JSON.stringify({ access_token, profile }),
